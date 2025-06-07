@@ -15,7 +15,12 @@ function draw() {
   const x = 200 + rotationY * 2;
   const y = 200 + rotationX * 2;
 
-  ctx.fillStyle = 'cyan';
+  // Kolor zależny od ruchu – RGB na podstawie pochylenia
+  const r = Math.min(255, Math.abs(rotationX) * 5);
+  const g = Math.min(255, Math.abs(rotationY) * 5);
+  const b = 255 - Math.min(255, (Math.abs(rotationX + rotationY) * 2));
+
+  ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
   ctx.beginPath();
   ctx.arc(x, y, 50, 0, Math.PI * 2);
   ctx.fill();
