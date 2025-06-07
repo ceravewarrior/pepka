@@ -24,3 +24,27 @@ function draw() {
 }
 
 draw();
+// iOS wymaga zgody użytkownika
+if (typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function') {
+  DeviceOrientationEvent.requestPermission()
+    .then(permissionState => {
+      if (permissionState === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation);
+      } else {
+        alert("Brak dostępu do żyroskopu.");
+      }
+    })
+    .catch(console.error);
+} else {
+  // Inne przeglądarki
+  window.addEventListener('deviceorientation', handleOrientation);
+}
+
+let rotationX = 0;
+let rotationY = 0;
+
+function handleOrientation(event) {
+  rotationX = event.beta;
+  rotationY = event.gamma;
+}
