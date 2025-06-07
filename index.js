@@ -1,13 +1,14 @@
 const canvas = document.getElementById('hologram');
 const ctx = canvas.getContext('2d');
+const startBtn = document.getElementById('startBtn');
 
 let rotationX = 0;
 let rotationY = 0;
 
-window.addEventListener('deviceorientation', (event) => {
-  rotationX = event.beta;   // góra-dół
-  rotationY = event.gamma;  // lewo-prawo
-});
+function handleOrientation(event) {
+  rotationX = event.beta || 0;
+  rotationY = event.gamma || 0;
+}
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -15,10 +16,10 @@ function draw() {
   const x = 200 + rotationY * 2;
   const y = 200 + rotationX * 2;
 
-  // Kolor zależny od ruchu – RGB na podstawie pochylenia
+  // Dynamiczny kolor RGB
   const r = Math.min(255, Math.abs(rotationX) * 5);
   const g = Math.min(255, Math.abs(rotationY) * 5);
-  const b = 255 - Math.min(255, (Math.abs(rotationX + rotationY) * 2));
+  const b = 255 - Math.min(255, Math.abs(rotationX + rotationY) * 2);
 
   ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
   ctx.beginPath();
@@ -28,28 +29,25 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-draw();
-// iOS wymaga zgody użytkownika
-if (typeof DeviceOrientationEvent !== 'undefined' &&
-    typeof DeviceOrientationEvent.requestPermission === 'function') {
-  DeviceOrientationEvent.requestPermission()
-    .then(permissionState => {
-      if (permissionState === 'granted') {
-        window.addEventListener('deviceorientation', handleOrientation);
-      } else {
-        alert("Brak dostępu do żyroskopu.");
-      }
-    })
-    .catch(console.error);
-} else {
-  // Inne przeglądarki
-  window.addEventListener('deviceorientation', handleOrientation);
-}
-
-let rotationX = 0;
-let rotationY = 0;
-
-function handleOrientation(event) {
-  rotationX = event.beta;
-  rotationY = event.gamma;
-}
+startBtn.addEventListener('click', () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iOS
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          draw();
+          startBtn.style.display = 'none';
+        } else {
+          alert('Brak dostępu do czujników.');
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Android / inne przeglądarki
+    window.addEventListener('deviceorientation', handleOrientation);
+    draw();
+    startBtn.style.display = 'none';
+  }
+});
