@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Hologram z żyroskopem</title>
+  <meta charset="UTF-8" />
+  <title>Hologram tło</title>
   <style>
-    body { margin: 0; background: black; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; }
-    canvas { background: #111; }
-    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      background: black;
+      flex-direction: column;
+      color: white;
+      font-family: sans-serif;
+    }
+    canvas {
+      border: 1px solid #444;
+      background: black;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
